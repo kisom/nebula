@@ -3,7 +3,9 @@
 * Introduction
 
   *Nebula* is a content-addressable file store that uses a capability
-  model for security.
+  model for security. This particular version is a development
+  demonstrator that aims to vet the core ideas; it is built on
+  rapidly-prototypable but unscalable practices.
 
 ** What problem are you trying to solve?
 
@@ -205,7 +207,21 @@ Users directly interacting with blobs presents two problems:
 
   You will need [[https://github.com/technomancy/leiningen][Leiningen]] 2.0.0 or above installed.
 
+  You will the =sqlite3= utility installed. If it's not already
+  installed, you can install it with
+
+  + Debian/Ubuntu: =apt-get install sqlite3=
+  + OpenBSD: =pkg_add sqlite3=
+
 * Running
+
+  Before running the server, the database must be created. In the
+  future, this will be done automatically; in the meantime:
+
+  1. Create a =nebula-store= directory in the directory you will be
+     running the server from. That is probably the root of this
+     project.
+  2. Run =sqlite3 -init resources/nebula.sql nebula-store/nebula.db=
 
   To start the server, run
 
