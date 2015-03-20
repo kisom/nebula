@@ -205,6 +205,27 @@ Users directly interacting with blobs presents two problems:
 
   You will need [[https://github.com/technomancy/leiningen][Leiningen]] 2.0.0 or above installed.
 
+* Running
+
+  To start the server, run
+
+#+BEGIN_EXAMPLE
+> lein ring server-headless
+#+END_EXAMPLE
+
+  If you visit [[http://localhost:3000/]], you will be presented with an
+  index page that lists the current endpoints.
+
+  Alternatively, you can run
+
+#+BEGIN_EXAMPLE
+> lein ring uberjar
+#+END_EXAMPLE
+
+  This will build a Java .jar file that you can copy and run
+  elsewhere. The location of the jarfile will be printed on the
+  console.
+
 * Endpoints
 
 The examples here assume a file server running on localhost.
