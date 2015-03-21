@@ -45,7 +45,11 @@
              [:li "remove the entry from the store"]
              [:li "this will perform garbage collection, removing the backing blob if it's no longer needed and any proxied entries that will now be invalidated."]
              [:li "returns the UUID of the deleted entry"]
-             [:li [:code "curl -X DELETE /entry/2181203d-7c99-4cf3-8461-f0702565819b"]]]]]]]))
+             [:li [:code "curl -X DELETE /entry/2181203d-7c99-4cf3-8461-f0702565819b"]]]]
+           [:li "GET /entry/:uuid/lineage :: retrieve an entry's lineage"
+            [:ul
+             [:li "returns a list of UUIDs representing the history of the entry"]
+             [:li [:code "curl /entry/2181203d-7c99-4cf3-8461-f0702565819b/lineage"]]]]]]]))
   
   (GET "/entry/:uuid" {{uuid :uuid} :params}
        (info (str "GET /entry/" uuid))
@@ -71,16 +75,15 @@
   (DELETE "/entry/:uuid" {{uuid :uuid} :params}
           (info (str "DELETE /entry" uuid))
           (store/delete-entry uuid))
+  (GET "/entry/:uuid/lineage" {{uuid :uuid} :params}
+       (info (str "GET /entry/" uuid "/lineage"))
+       (store/entry-history uuid))
   (route/not-found (do
                      (info "not found")
                      "Not Found")))
-
 
 (def app
   (wrap-defaults app-routes
                  ;; security disabled while I figured out the
                  ;; anti-forgery tokens
                  (dissoc site-defaults :security)))
-
-
-  

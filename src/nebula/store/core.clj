@@ -70,5 +70,18 @@
   (when (and (validate-id uuid) (db/delete-entry uuid))
     uuid))
 
+(defn load-history 
+  [uuid lineage]
+  (let [entry (db/lookup-entry uuid)]
+    (if (and entry (:parent entry))
+      (recur (:parent entry) (conj lineage uuid))
+      (conj lineage uuid))))
+
+(schema/defn ^:always-validate
+  entry-history
+  [uuid :- schema/Str]
+  (when (entry/uuid? uuid)
+      (json/generate-string (load-history uuid []))))
+
 
 
