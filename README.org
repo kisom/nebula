@@ -345,6 +345,31 @@ curl -X DELETE localhost:3000/entry/9b894ab7-0a16-44be-851f-74e6524ca575
 }
 #+END_EXAMPLE
 
+** Retrieve entry lineage
+
+   =GET /entry/:uuid/lineage=
+
+   A lineage is the set of entries representing a succession of parent
+   entries. The first entry is the UUID requested; what follows is a list
+   of parents.
+
+   Consider the following sequence:
+   + A file is uploaded and assigned the ID 53ca9f30-4de6-4661-9e5a-e57bc78a873a
+   + The file is changed and POSTed to
+     /entry/53ca9f30-4de6-4661-9e5a-e57bc78a873a, returning the UUID
+     9cb205d0-e7e5-4b14-9307-5ab70841786d
+   + The file is changed again, and POSTed to
+     /entry/9cb205d0-e7e5-4b14-9307-5ab70841786d returning the UUID
+     6c7328cd-a7f1-4b90-8b08-d3d59b40df8f
+
+   The following example demonstrates returning the file's lineage:
+
+#+BEGIN_EXAMPLE
+["6c7328cd-a7f1-4b90-8b08-d3d59b40df8f"
+,"9cb205d0-e7e5-4b14-9307-5ab70841786d"
+,"53ca9f30-4de6-4661-9e5a-e57bc78a873a"]
+#+END_EXAMPLE
+   
 * TODOs, thoughts, and considerations
 
   This isn't even an alpha right now. This is a development
