@@ -49,7 +49,11 @@
            [:li "GET /entry/:uuid/lineage :: retrieve an entry's lineage"
             [:ul
              [:li "returns a list of UUIDs representing the history of the entry"]
-             [:li [:code "curl /entry/2181203d-7c99-4cf3-8461-f0702565819b/lineage"]]]]]]]))
+             [:li [:code "curl /entry/2181203d-7c99-4cf3-8461-f0702565819b/lineage"]]]]
+           [:li "GET /entry/:uuid/lineage/proxy :: proxy a lineage"
+            [:ul
+             [:li "proxies an entry and all its parents."]
+             [:li [:code "curl /entry/2181203d-7c99-4cf3-8461-f0702565819b/lineage/proxy"]]]]]]]))
   
   (GET "/entry/:uuid" {{uuid :uuid} :params}
        (info (str "GET /entry/" uuid))
@@ -72,6 +76,9 @@
   (GET "/entry/:uuid/proxy" {{uuid :uuid} :params}
        (info "GET /entry/" uuid "/proxy")
        (store/proxy-entry uuid))
+  (GET "/entry/:uuid/lineage/proxy" {{uuid :uuid} :params}
+        (info "GET /entry/" uuid "/proxy")
+(store/proxy-all uuid))
   (DELETE "/entry/:uuid" {{uuid :uuid} :params}
           (info (str "DELETE /entry" uuid))
           (store/delete-entry uuid))

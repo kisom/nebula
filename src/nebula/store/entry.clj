@@ -79,3 +79,22 @@
    true
    (:metadata e)
    nil nil))
+
+(schema/defn ^:always-validate
+  set-entry-parent :- Entry
+  "set-parent-entry creates a copy of entry with its parent set to
+  from. This is used when making proxies, and is done before entries
+  hit the database."
+  [entry :- Entry
+   from  :- (schema/maybe schema/Str)]
+  (Entry.
+   (:id entry)
+   (:target entry)
+   (:proxy entry)
+   (:metadata entry)
+   (when (uuid? from) from)
+   nil))
+
+
+
+

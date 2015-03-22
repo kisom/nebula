@@ -70,18 +70,41 @@
   (when (and (validate-id uuid) (db/delete-entry uuid))
     uuid))
 
-(defn load-history 
-  [uuid lineage]
-  (let [entry (db/lookup-entry uuid)]
-    (if (and entry (:parent entry))
-      (recur (:parent entry) (conj lineage uuid))
-      (conj lineage uuid))))
+(defn load-history
+  ([uuid] (load-history uuid []))
+  ([uuid lineage]
+   (let [entry (db/lookup-entry uuid)]
+     (if (and entry (:parent entry))
+       (recur (:parent entry) (conj lineage uuid))
+       (conj lineage uuid)))))
+
+(defn- build-proxy-list
+  ([proxy-list] (build-proxy-list proxy-list []))
+  ([proxy-list proxied] 
+   ;; (map (comp db/lookup-entry entry/proxy-entry)
+   ;;      (load-history uuid []))
+   (let [entry (first proxy-list)]
+     (if (not (empty? (rest proxy-list)))
+       (let [parent (nth proxy-list 1)]
+         (recur (rest proxy-list)
+                (conj proxied (entry/set-entry-parent
+                               entry
+                               (when-not (nil? parent)
+                                 (:id parent))))))
+       (conj proxied entry)))))
+
+(defn proxy-all
+  [uuid]
+  (let [proxied (build-proxy-list
+                 (map (comp entry/proxy-entry db/lookup-entry)
+                      (load-history uuid)))]
+    (map db/store-entry proxied)
+    (json/generate-string
+     (map :id proxied))))
 
 (schema/defn ^:always-validate
   entry-history
   [uuid :- schema/Str]
   (when (entry/uuid? uuid)
-      (json/generate-string (load-history uuid []))))
-
-
+      (json/generate-string (load-history uuid))))
 
